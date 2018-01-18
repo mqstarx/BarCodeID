@@ -21,14 +21,17 @@ namespace BarCodeID
         Bitmap bitmap;
         Graphics g_polufpage;
         QRCoder.QRCode qrCode;
-        string cur_page_packet;
+        int cur_page_packet_counter=0;
+        string[] arr_print;
         int scan_flag_counter = 0;
+        int y_coord_prev = 0;
         public MainForm()
         {
 
             InitializeComponent();
             g_polufpage = print_page_poluf.CreateGraphics();
             print_page_poluf.Paint += Print_page_poluf_Paint;
+            change_interval_cmb.SelectedIndex = 0;
            
         }
 
@@ -82,18 +85,25 @@ namespace BarCodeID
                                
         }
 
-       
+        private void DrawQrCode(string data, Graphics g, int z,Point p)
+        {
+            QRCoder.QRCodeData qr_data = qgen.CreateQrCode(data, QRCoder.QRCodeGenerator.ECCLevel.L);
+            qrCode = new QRCoder.QRCode(qr_data);
+            bitmap = qrCode.GetGraphic(25);
+            g.DrawImage(bitmap, p.X, p.Y, z, z);
 
-       
+        }
 
-       
 
-     
+
+
+
+
 
         private void PD_PrintPage(object sender, PrintPageEventArgs e)
         {
            
-            DrawQrCode(GenerateQrPacket(), e.Graphics, (int)qr_size_poluf.Value);
+            DrawQrCode(GenerateQrPacket(), e.Graphics, (int)qr_size_poluf.Value, new Point(0, 0));
         }
 
 
@@ -226,7 +236,7 @@ namespace BarCodeID
 
 
                 ListObject result = new ListObject();
-               // qr_add_poluf.Items.Clear();
+               
            
                 string datapacket = res.Substring(res.IndexOf("FFX") + 6, int.Parse(res.Substring(res.IndexOf("FFX") + 3, 3)));
 
@@ -294,6 +304,7 @@ namespace BarCodeID
                     QrPacket.Clear();
                 }
                 qr_add_poluf.Items.Add(result);
+                add_sn_chk.Checked = false;
                 print_page_poluf.Invalidate();
 
             }
@@ -507,7 +518,12 @@ namespace BarCodeID
 
         private void qr_size_poluf_ValueChanged(object sender, EventArgs e)
         {
-           print_page_poluf.Invalidate();
+            int old_val = int.Parse(((NumericUpDown)sender).Text);
+            if (((NumericUpDown)sender).Value > old_val)
+                ((NumericUpDown)sender).Value = old_val + int.Parse(change_interval_cmb.Text);
+            else
+                ((NumericUpDown)sender).Value = old_val - int.Parse(change_interval_cmb.Text);
+            print_page_poluf.Invalidate();
         }
         private void Print_page_poluf_Paint(object sender, PaintEventArgs e)
         {
@@ -516,32 +532,62 @@ namespace BarCodeID
 
         private void print_btn_Click(object sender, EventArgs e)
         {
-           
+            
+          
+            
             if (add_sn_chk.Checked)
             {
                 PrintDocument printDocument = new PrintDocument();
+                PrintPreviewDialog prd = new PrintPreviewDialog();
+                printDocument.DefaultPageSettings.PaperSize = new PaperSize("Other", (int)qr_size_poluf.Value, (int)qr_size_poluf.Value);
+                prd.Document = printDocument;
                 printDocument.PrintPage += PrintDocument_PrintPageArray;
-                string[] arr  = GenerateQrPacketArray();
-                for(int i=0;i<arr.Length;i++)
-                {
-                    cur_page_packet = arr[i];
-                    printDocument.Print();
-                    
-                }
+               
+                arr_print  = GenerateQrPacketArray();
+                cur_page_packet_counter = 0;
+                y_coord_prev = 0;
+                prd.ShowDialog();
+                /* for(int i=0;i<arr.Length;i++)
+                 {
+                     cur_page_packet = arr[i];
+                     printDocument.Print();
+
+                 }*/
             }
             else
             {
-                PrintDocument printDocument = new PrintDocument();
+                PrintDocument printDocument = new PrintDocument();              
+                PrintPreviewDialog prd = new PrintPreviewDialog();
+                printDocument.DefaultPageSettings.PaperSize   = new PaperSize("Other",(int)qr_size_poluf.Value , (int)qr_size_poluf.Value );
+                prd.Document = printDocument;
                 printDocument.PrintPage += PD_PrintPage;
-                printDocument.Print();
+                prd.ShowDialog();
+               /// printDocument.Print();
             }
         }
 
         private void PrintDocument_PrintPageArray(object sender, PrintPageEventArgs e)
         {
-            DrawQrCode(cur_page_packet, e.Graphics, (int)qr_size_poluf.Value);
-        }
+            if (cur_page_packet_counter >= arr_print.Length)
+            {
+                e.HasMorePages = false;
+                return;
+            }
+            else
+            {
+                if(cur_page_packet_counter!=arr_print.Length-1)
+                e.HasMorePages = true;
+                //  string[] arr = GenerateQrPacketArray();
 
+
+
+
+                DrawQrCode(arr_print[cur_page_packet_counter], e.Graphics, (int)qr_size_poluf.Value, new Point(0, 0));
+              
+                cur_page_packet_counter++;
+                //  e.HasMorePages = false;
+            }
+        }
         private void add_sn_chk_CheckedChanged(object sender, EventArgs e)
         {
             if (add_sn_chk.Checked)
@@ -591,6 +637,11 @@ namespace BarCodeID
                     lwi.Object1 = value_poluf_cmb.SelectedItem;
                 }
                 lwi.Text = obj.DataDescr + ": " + value_poluf_cmb.Text;
+                if((value_poluf_cmb.Text.Length<obj.DataLen || value_poluf_cmb.Text.Length > obj.DataLen)&& value_poluf_cmb.DropDownStyle== ComboBoxStyle.Simple)
+                {
+                    MessageBox.Show("Кол-во символов не соответствует справочнику");
+                    return;
+                }
                 lwi.Text1 = value_poluf_cmb.Text;
                 qr_result_poluf.Items.Add(lwi);
 
@@ -625,7 +676,7 @@ namespace BarCodeID
                     lwi.Text = ((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).DataDescr + ": " + sn_str;
                     lwi.Object = (PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object;
                     qr_result_poluf.Items[i] = lwi;
-
+                    print_page_poluf.Invalidate();
                 }
             }
         }
@@ -658,6 +709,12 @@ namespace BarCodeID
             value_poluf_cmb.Enabled = false;
             qr_size_poluf.Enabled = false;
             sn_array_count.Enabled = false;
+        }
+
+        private void clear_lists_btn_Click(object sender, EventArgs e)
+        {
+            qr_result_poluf.Items.Clear();
+            qr_add_poluf.Items.Clear();
         }
     }
 }

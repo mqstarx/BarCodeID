@@ -34,6 +34,7 @@
             this.list_ident_data = new System.Windows.Forms.ListBox();
             this.print_page_poluf = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.add_from_skanner_btn = new System.Windows.Forms.Button();
             this.incr_sn_btn = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.add_qr_btn = new System.Windows.Forms.Button();
@@ -65,8 +66,9 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.path_btn = new System.Windows.Forms.Button();
             this.path_lbl = new System.Windows.Forms.Label();
-            this.add_from_skanner_btn = new System.Windows.Forms.Button();
             this.timer_scan = new System.Windows.Forms.Timer(this.components);
+            this.clear_lists_btn = new System.Windows.Forms.Button();
+            this.change_interval_cmb = new System.Windows.Forms.ComboBox();
             this.tab_control.SuspendLayout();
             this.ident_page.SuspendLayout();
             this.print_page_poluf.SuspendLayout();
@@ -133,6 +135,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.change_interval_cmb);
+            this.groupBox1.Controls.Add(this.clear_lists_btn);
             this.groupBox1.Controls.Add(this.add_from_skanner_btn);
             this.groupBox1.Controls.Add(this.incr_sn_btn);
             this.groupBox1.Controls.Add(this.label3);
@@ -155,6 +159,17 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Данные этикетки";
+            // 
+            // add_from_skanner_btn
+            // 
+            this.add_from_skanner_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.add_from_skanner_btn.Location = new System.Drawing.Point(214, 313);
+            this.add_from_skanner_btn.Name = "add_from_skanner_btn";
+            this.add_from_skanner_btn.Size = new System.Drawing.Size(201, 31);
+            this.add_from_skanner_btn.TabIndex = 23;
+            this.add_from_skanner_btn.Text = "Сканировать входные детали";
+            this.add_from_skanner_btn.UseVisualStyleBackColor = true;
+            this.add_from_skanner_btn.Click += new System.EventHandler(this.add_from_skanner_btn_Click);
             // 
             // incr_sn_btn
             // 
@@ -199,6 +214,7 @@
             0,
             0});
             this.qr_size_poluf.Name = "qr_size_poluf";
+            this.qr_size_poluf.ReadOnly = true;
             this.qr_size_poluf.Size = new System.Drawing.Size(120, 26);
             this.qr_size_poluf.TabIndex = 16;
             this.qr_size_poluf.Value = new decimal(new int[] {
@@ -216,7 +232,7 @@
             this.qr_add_poluf.HorizontalScrollbar = true;
             this.qr_add_poluf.Location = new System.Drawing.Point(6, 173);
             this.qr_add_poluf.Name = "qr_add_poluf";
-            this.qr_add_poluf.Size = new System.Drawing.Size(409, 186);
+            this.qr_add_poluf.Size = new System.Drawing.Size(409, 134);
             this.qr_add_poluf.TabIndex = 20;
             // 
             // contextMenuStrip1
@@ -279,7 +295,7 @@
             // 
             this.value_poluf_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.value_poluf_cmb.FormattingEnabled = true;
-            this.value_poluf_cmb.Location = new System.Drawing.Point(161, 64);
+            this.value_poluf_cmb.Location = new System.Drawing.Point(160, 64);
             this.value_poluf_cmb.Name = "value_poluf_cmb";
             this.value_poluf_cmb.Size = new System.Drawing.Size(236, 28);
             this.value_poluf_cmb.TabIndex = 12;
@@ -324,7 +340,7 @@
             // 
             // sn_array_count
             // 
-            this.sn_array_count.Location = new System.Drawing.Point(532, 425);
+            this.sn_array_count.Location = new System.Drawing.Point(247, 429);
             this.sn_array_count.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -465,21 +481,34 @@
             this.path_lbl.TabIndex = 0;
             this.path_lbl.Text = "..";
             // 
-            // add_from_skanner_btn
-            // 
-            this.add_from_skanner_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.add_from_skanner_btn.Location = new System.Drawing.Point(158, 133);
-            this.add_from_skanner_btn.Name = "add_from_skanner_btn";
-            this.add_from_skanner_btn.Size = new System.Drawing.Size(239, 31);
-            this.add_from_skanner_btn.TabIndex = 23;
-            this.add_from_skanner_btn.Text = "Сканировать входные детали";
-            this.add_from_skanner_btn.UseVisualStyleBackColor = true;
-            this.add_from_skanner_btn.Click += new System.EventHandler(this.add_from_skanner_btn_Click);
-            // 
             // timer_scan
             // 
             this.timer_scan.Interval = 1000;
             this.timer_scan.Tick += new System.EventHandler(this.timer_scan_Tick);
+            // 
+            // clear_lists_btn
+            // 
+            this.clear_lists_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.clear_lists_btn.Location = new System.Drawing.Point(421, 424);
+            this.clear_lists_btn.Name = "clear_lists_btn";
+            this.clear_lists_btn.Size = new System.Drawing.Size(146, 31);
+            this.clear_lists_btn.TabIndex = 24;
+            this.clear_lists_btn.Text = "Очитстить формы";
+            this.clear_lists_btn.UseVisualStyleBackColor = true;
+            this.clear_lists_btn.Click += new System.EventHandler(this.clear_lists_btn_Click);
+            // 
+            // change_interval_cmb
+            // 
+            this.change_interval_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.change_interval_cmb.FormattingEnabled = true;
+            this.change_interval_cmb.Items.AddRange(new object[] {
+            "1",
+            "10",
+            "20"});
+            this.change_interval_cmb.Location = new System.Drawing.Point(144, 135);
+            this.change_interval_cmb.Name = "change_interval_cmb";
+            this.change_interval_cmb.Size = new System.Drawing.Size(42, 28);
+            this.change_interval_cmb.TabIndex = 25;
             // 
             // MainForm
             // 
@@ -548,6 +577,8 @@
         private System.Windows.Forms.Button incr_sn_btn;
         private System.Windows.Forms.Button add_from_skanner_btn;
         private System.Windows.Forms.Timer timer_scan;
+        private System.Windows.Forms.Button clear_lists_btn;
+        private System.Windows.Forms.ComboBox change_interval_cmb;
     }
 }
 
