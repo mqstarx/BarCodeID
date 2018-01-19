@@ -138,9 +138,14 @@ namespace BarCodeID
             {
                 DbPath = GetRegistryValue();
                 path_lbl.Text = DbPath;
-                DbList = Functions.LoadConfig(DbPath);
-                UpdateListControl();
-
+                try {
+                    DbList = Functions.LoadConfig(DbPath);
+                    UpdateListControl();
+                }
+                catch
+                {
+                    MessageBox.Show("ошибка загрузки справочника");
+                }
             }
             if (!CheckRegistryPath())
                 this.Close();
