@@ -517,7 +517,7 @@ namespace BarCodeID
 
 
                 }
-                resarray[j] = packet_data;
+                resarray[j] = "FFX" + packet_data.Length.ToString("000")+packet_data + "FXX";
             }
 
             return resarray;
