@@ -34,6 +34,8 @@
             this.list_ident_data = new System.Windows.Forms.ListBox();
             this.print_page_poluf = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.change_interval_cmb = new System.Windows.Forms.ComboBox();
+            this.clear_lists_btn = new System.Windows.Forms.Button();
             this.add_from_skanner_btn = new System.Windows.Forms.Button();
             this.incr_sn_btn = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -63,12 +65,11 @@
             this.data_len_column = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.data_descr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.property_page = new System.Windows.Forms.TabPage();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.path_btn = new System.Windows.Forms.Button();
             this.path_lbl = new System.Windows.Forms.Label();
             this.timer_scan = new System.Windows.Forms.Timer(this.components);
-            this.clear_lists_btn = new System.Windows.Forms.Button();
-            this.change_interval_cmb = new System.Windows.Forms.ComboBox();
             this.tab_control.SuspendLayout();
             this.ident_page.SuspendLayout();
             this.print_page_poluf.SuspendLayout();
@@ -159,6 +160,30 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Данные этикетки";
+            // 
+            // change_interval_cmb
+            // 
+            this.change_interval_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.change_interval_cmb.FormattingEnabled = true;
+            this.change_interval_cmb.Items.AddRange(new object[] {
+            "1",
+            "10",
+            "20"});
+            this.change_interval_cmb.Location = new System.Drawing.Point(144, 135);
+            this.change_interval_cmb.Name = "change_interval_cmb";
+            this.change_interval_cmb.Size = new System.Drawing.Size(42, 28);
+            this.change_interval_cmb.TabIndex = 25;
+            // 
+            // clear_lists_btn
+            // 
+            this.clear_lists_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.clear_lists_btn.Location = new System.Drawing.Point(421, 424);
+            this.clear_lists_btn.Name = "clear_lists_btn";
+            this.clear_lists_btn.Size = new System.Drawing.Size(146, 31);
+            this.clear_lists_btn.TabIndex = 24;
+            this.clear_lists_btn.Text = "Очитстить формы";
+            this.clear_lists_btn.UseVisualStyleBackColor = true;
+            this.clear_lists_btn.Click += new System.EventHandler(this.clear_lists_btn_Click);
             // 
             // add_from_skanner_btn
             // 
@@ -443,6 +468,7 @@
             // 
             // property_page
             // 
+            this.property_page.Controls.Add(this.propertyGrid1);
             this.property_page.Controls.Add(this.groupBox3);
             this.property_page.Location = new System.Drawing.Point(4, 29);
             this.property_page.Name = "property_page";
@@ -450,6 +476,15 @@
             this.property_page.TabIndex = 4;
             this.property_page.Text = "Настройки";
             this.property_page.UseVisualStyleBackColor = true;
+            // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.propertyGrid1.Location = new System.Drawing.Point(607, 12);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.SelectedObject = this.param_poluf_cmb;
+            this.propertyGrid1.Size = new System.Drawing.Size(397, 430);
+            this.propertyGrid1.TabIndex = 1;
             // 
             // groupBox3
             // 
@@ -485,30 +520,6 @@
             // 
             this.timer_scan.Interval = 1000;
             this.timer_scan.Tick += new System.EventHandler(this.timer_scan_Tick);
-            // 
-            // clear_lists_btn
-            // 
-            this.clear_lists_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.clear_lists_btn.Location = new System.Drawing.Point(421, 424);
-            this.clear_lists_btn.Name = "clear_lists_btn";
-            this.clear_lists_btn.Size = new System.Drawing.Size(146, 31);
-            this.clear_lists_btn.TabIndex = 24;
-            this.clear_lists_btn.Text = "Очитстить формы";
-            this.clear_lists_btn.UseVisualStyleBackColor = true;
-            this.clear_lists_btn.Click += new System.EventHandler(this.clear_lists_btn_Click);
-            // 
-            // change_interval_cmb
-            // 
-            this.change_interval_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.change_interval_cmb.FormattingEnabled = true;
-            this.change_interval_cmb.Items.AddRange(new object[] {
-            "1",
-            "10",
-            "20"});
-            this.change_interval_cmb.Location = new System.Drawing.Point(144, 135);
-            this.change_interval_cmb.Name = "change_interval_cmb";
-            this.change_interval_cmb.Size = new System.Drawing.Size(42, 28);
-            this.change_interval_cmb.TabIndex = 25;
             // 
             // MainForm
             // 
@@ -579,6 +590,7 @@
         private System.Windows.Forms.Timer timer_scan;
         private System.Windows.Forms.Button clear_lists_btn;
         private System.Windows.Forms.ComboBox change_interval_cmb;
+        private System.Windows.Forms.PropertyGrid propertyGrid1;
     }
 }
 

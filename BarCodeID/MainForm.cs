@@ -24,7 +24,8 @@ namespace BarCodeID
         int cur_page_packet_counter=0;
         string[] arr_print;
         int scan_flag_counter = 0;
-        int y_coord_prev = 0;
+        public PrinterSettings m_printerSettings;
+       
         public MainForm()
         {
 
@@ -32,7 +33,8 @@ namespace BarCodeID
             g_polufpage = print_page_poluf.CreateGraphics();
             print_page_poluf.Paint += Print_page_poluf_Paint;
             change_interval_cmb.SelectedIndex = 0;
-           
+            m_printerSettings = new PrinterSettings();
+            propertyGrid1.SelectedObject = m_printerSettings;
         }
 
        
@@ -525,9 +527,20 @@ namespace BarCodeID
         {
             int old_val = int.Parse(((NumericUpDown)sender).Text);
             if (((NumericUpDown)sender).Value > old_val)
-                ((NumericUpDown)sender).Value = old_val + int.Parse(change_interval_cmb.Text);
+            {
+                if (old_val + int.Parse(change_interval_cmb.Text) > ((NumericUpDown)sender).Maximum)
+                    ((NumericUpDown)sender).Value = ((NumericUpDown)sender).Maximum;
+                else
+                    ((NumericUpDown)sender).Value = old_val + int.Parse(change_interval_cmb.Text);
+
+            }
             else
+            {
+                if (old_val - int.Parse(change_interval_cmb.Text) < ((NumericUpDown)sender).Minimum)
+                    ((NumericUpDown)sender).Value = ((NumericUpDown)sender).Minimum;
+                else
                 ((NumericUpDown)sender).Value = old_val - int.Parse(change_interval_cmb.Text);
+            }
             print_page_poluf.Invalidate();
         }
         private void Print_page_poluf_Paint(object sender, PaintEventArgs e)
@@ -550,7 +563,7 @@ namespace BarCodeID
                
                 arr_print  = GenerateQrPacketArray();
                 cur_page_packet_counter = 0;
-                y_coord_prev = 0;
+               
                 prd.ShowDialog();
                 /* for(int i=0;i<arr.Length;i++)
                  {
@@ -564,6 +577,7 @@ namespace BarCodeID
                 PrintDocument printDocument = new PrintDocument();              
                 PrintPreviewDialog prd = new PrintPreviewDialog();
                 printDocument.DefaultPageSettings.PaperSize   = new PaperSize("Other",(int)qr_size_poluf.Value , (int)qr_size_poluf.Value );
+                
                 prd.Document = printDocument;
                 printDocument.PrintPage += PD_PrintPage;
                 prd.ShowDialog();
@@ -576,6 +590,7 @@ namespace BarCodeID
             if (cur_page_packet_counter >= arr_print.Length)
             {
                 e.HasMorePages = false;
+               
                 return;
             }
             else
@@ -590,7 +605,9 @@ namespace BarCodeID
                 DrawQrCode(arr_print[cur_page_packet_counter], e.Graphics, (int)qr_size_poluf.Value, new Point(0, 0));
               
                 cur_page_packet_counter++;
-                //  e.HasMorePages = false;
+
+                if(e.HasMorePages == false)
+                    cur_page_packet_counter = 0;
             }
         }
         private void add_sn_chk_CheckedChanged(object sender, EventArgs e)
