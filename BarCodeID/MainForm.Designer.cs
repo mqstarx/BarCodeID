@@ -65,7 +65,6 @@
             this.data_len_column = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.data_descr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.property_page = new System.Windows.Forms.TabPage();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.path_btn = new System.Windows.Forms.Button();
             this.path_lbl = new System.Windows.Forms.Label();
@@ -468,7 +467,6 @@
             // 
             // property_page
             // 
-            this.property_page.Controls.Add(this.propertyGrid1);
             this.property_page.Controls.Add(this.groupBox3);
             this.property_page.Location = new System.Drawing.Point(4, 29);
             this.property_page.Name = "property_page";
@@ -476,15 +474,6 @@
             this.property_page.TabIndex = 4;
             this.property_page.Text = "Настройки";
             this.property_page.UseVisualStyleBackColor = true;
-            // 
-            // propertyGrid1
-            // 
-            this.propertyGrid1.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.propertyGrid1.Location = new System.Drawing.Point(607, 12);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.SelectedObject = this.param_poluf_cmb;
-            this.propertyGrid1.Size = new System.Drawing.Size(397, 430);
-            this.propertyGrid1.TabIndex = 1;
             // 
             // groupBox3
             // 
@@ -590,7 +579,6 @@
         private System.Windows.Forms.Timer timer_scan;
         private System.Windows.Forms.Button clear_lists_btn;
         private System.Windows.Forms.ComboBox change_interval_cmb;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
     }
 }
 

@@ -34,7 +34,7 @@ namespace BarCodeID
             print_page_poluf.Paint += Print_page_poluf_Paint;
             change_interval_cmb.SelectedIndex = 0;
             m_printerSettings = new PrinterSettings();
-            propertyGrid1.SelectedObject = m_printerSettings;
+           
         }
 
        
@@ -737,6 +737,7 @@ namespace BarCodeID
         {
             qr_result_poluf.Items.Clear();
             qr_add_poluf.Items.Clear();
+            print_page_poluf.Invalidate();
         }
     }
 }
