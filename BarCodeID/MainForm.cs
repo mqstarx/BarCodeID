@@ -229,14 +229,14 @@ namespace BarCodeID
         }
 
         private void ParseQrPacketAdd()
+           
             {
             string res = "";
             foreach (char c in QrPacket)
-            {
+           {
                 res += c;
             }
             if (res.IndexOf("FFX") != -1 && res.IndexOf("FXX") != -1 && res.Length > 9)
-
 
             {
 
@@ -517,7 +517,7 @@ namespace BarCodeID
 
 
                 }
-                resarray[j] = packet_data;
+                resarray[j] = "FFX" + packet_data.Length.ToString("000")+packet_data + "FXX";
             }
 
             return resarray;
