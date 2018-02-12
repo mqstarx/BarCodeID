@@ -78,6 +78,13 @@ namespace BarCodeID
 
 
         }
+
+        /// <summary>
+        /// отрисовка qr-кода в заданной  графике
+        /// </summary>
+        /// <param name="data">данные</param>
+        /// <param name="g">объект графики</param>
+        /// <param name="z">размер qr-кода</param>
         private void DrawQrCode(string data, Graphics g, int z)
         {
             QRCoder.QRCodeData qr_data = qgen.CreateQrCode(data, QRCoder.QRCodeGenerator.ECCLevel.L);
@@ -86,7 +93,13 @@ namespace BarCodeID
             g.DrawImage(bitmap, 10, 10,z, z);
                                
         }
-
+        /// <summary>
+        /// отрисовка qr-кода в заданной  графике
+        /// </summary>
+        /// <param name="data">данные</param>
+        /// <param name="g">объект графики</param>
+        /// <param name="z">размер qr-кода</param>
+        /// <param name="p">начальная точка (координаты)</param>
         private void DrawQrCode(string data, Graphics g, int z,Point p)
         {
             QRCoder.QRCodeData qr_data = qgen.CreateQrCode(data, QRCoder.QRCodeGenerator.ECCLevel.L);
@@ -101,7 +114,9 @@ namespace BarCodeID
 
 
 
-
+        /// <summary>
+        /// Событие печати страницы
+        /// </summary>
         private void PD_PrintPage(object sender, PrintPageEventArgs e)
         {
            
@@ -109,7 +124,9 @@ namespace BarCodeID
         }
 
 
-
+        /// <summary>
+        /// выбор файла справочника
+        /// </summary>
         private void path_btn_Click(object sender, EventArgs e)
         {
             OpenFileDialog op_fd = new OpenFileDialog();
@@ -152,6 +169,7 @@ namespace BarCodeID
             if (!CheckRegistryPath())
                 this.Close();
         }
+
         private void UpdateListControl()
         {
             list_data.Items.Clear();
@@ -194,7 +212,9 @@ namespace BarCodeID
             }
         }
 
-       
+        /// <summary>
+        /// массив символов для формирования пакета во время считывания
+        /// </summary>
         private List<char> QrPacket = new List<char>();
         private void tab_control_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -227,31 +247,27 @@ namespace BarCodeID
 
             }
         }
-
+        /// <summary>
+        /// парсинг пакетов 
+        /// </summary>
         private void ParseQrPacketAdd()
-           
-            {
+
+        {
             string res = "";
             foreach (char c in QrPacket)
-           {
+            {
                 res += c;
             }
+            //нашли пакет
             if (res.IndexOf("FFX") != -1 && res.IndexOf("FXX") != -1 && res.Length > 9)
-
             {
-
-
-
                 ListObject result = new ListObject();
-               
-           
+                //вычленяем заголовок
                 string datapacket = res.Substring(res.IndexOf("FFX") + 6, int.Parse(res.Substring(res.IndexOf("FFX") + 3, 3)));
-
                 string t_packet = datapacket;
                 List<string> in_pac = new List<string>();
-
+           
                 // парсинг входящих пакетов в состав основного пакета
-
                 while (t_packet.IndexOf("FFY") != -1 && t_packet.IndexOf("FYY") != -1)
                 {
                     in_pac.Add(t_packet.Substring(t_packet.IndexOf("FFY") + 6, int.Parse(res.Substring(res.IndexOf("FFY") + 3, 3))));
@@ -269,12 +285,12 @@ namespace BarCodeID
                                 foreach (KeyValuePair<string, string> kv in p.KeyValue)
                                 {
                                     if (kv.Key == d)
-                                        result.Text+=p.DataDescr + ": " + kv.Value+";";
+                                        result.Text += p.DataDescr + ": " + kv.Value + ";";
                                 }
                             }
                             else
                             {
-                                result.Text+=p.DataDescr + ": " + d + ";";
+                                result.Text += p.DataDescr + ": " + d + ";";
                             }
 
                         }
@@ -295,7 +311,7 @@ namespace BarCodeID
                                 foreach (KeyValuePair<string, string> kv in p.KeyValue)
                                 {
                                     if (kv.Key == d)
-                                        result.Text+=p.DataDescr + ": " + kv.Value + ";";
+                                        result.Text += p.DataDescr + ": " + kv.Value + ";";
                                 }
                             }
                             else
@@ -305,9 +321,9 @@ namespace BarCodeID
 
                         }
                     }
-                   
+
                     result.Text1 = main_packet;
-                   
+
                     QrPacket.Clear();
                 }
                 qr_add_poluf.Items.Add(result);
@@ -454,21 +470,19 @@ namespace BarCodeID
         }
 
        
-
+        /// <summary>
+        /// функция формирования пакета из данных, добавленных  в контролы 
+        /// </summary>
+        /// <returns></returns>
         private string GenerateQrPacket()
         {
             string packet_data = "";
             for (int i = 0; i < qr_result_poluf.Items.Count; i++)
             {
-
-
                 if (((ListObject)qr_result_poluf.Items[i]).Object1 != null)
                     packet_data += ((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).TypeId + ((KeyValuePair<string, string>)((ListObject)qr_result_poluf.Items[i]).Object1).Key;
                 else
                     packet_data += ((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).TypeId + ((ListObject)qr_result_poluf.Items[i]).Text1;
-
-                
-
 
             }
             for (int j = 0; j < qr_add_poluf.Items.Count; j++)
@@ -479,6 +493,11 @@ namespace BarCodeID
 
             return "FFX" + packet_data.Length.ToString("000") + packet_data + "FXX";
         }
+
+        /// <summary>
+        /// функция формирования массива пакетов из данных, добавленных  в контролы, с учетом печати серии номеров
+        /// </summary>
+        /// <returns></returns>
         private string[] GenerateQrPacketArray()
         {
             string[] resarray = new string[(int)sn_array_count.Value];
@@ -585,6 +604,9 @@ namespace BarCodeID
             }
         }
 
+        /// <summary>
+        /// событие печати списка этикеток
+        /// </summary>  
         private void PrintDocument_PrintPageArray(object sender, PrintPageEventArgs e)
         {
             if (cur_page_packet_counter >= arr_print.Length)
