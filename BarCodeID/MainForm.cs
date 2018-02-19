@@ -6,7 +6,9 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -39,17 +41,18 @@ namespace BarCodeID
 
        
 
-        private bool CheckRegistryPath()
+        private bool CheckRegistryPath(string sub_key)
         {
             RegistryKey localmachineKey = Registry.CurrentUser;
-            RegistryKey m_key = localmachineKey.OpenSubKey("BarCodeId", true);
+            // RegistryKey m_key = localmachineKey.OpenSubKey("BarCodeId", true);
+            RegistryKey m_key = localmachineKey.OpenSubKey(sub_key, true);
             if (m_key == null)
                 return false;
             else
                 return true;
 
         }
-        private string GetRegistryValue()
+        private string GetRegistryValue(string sub_key,string pole)
         {
             RegistryKey localmachineKey = Registry.CurrentUser;
             RegistryKey m_key = localmachineKey.OpenSubKey("BarCodeId", true);
@@ -58,22 +61,22 @@ namespace BarCodeID
             else
             {
 
-                string str = m_key.GetValue("Path").ToString();
-
+                // string str = m_key.GetValue("Path").ToString();
+                string str = m_key.GetValue(pole).ToString();
                 m_key.Close();
                 return str;
             }
         }
-        private void SetRegistryValue(string path)
+        private void SetRegistryValue(string sub_key, string pole,string val)
         {
             RegistryKey localmachineKey = Registry.CurrentUser;
             RegistryKey m_key;
-            if (!CheckRegistryPath())
-                m_key = localmachineKey.CreateSubKey("BarCodeId");
+            if (!CheckRegistryPath(sub_key))
+                m_key = localmachineKey.CreateSubKey(sub_key);
             else
-                m_key = localmachineKey.OpenSubKey("BarCodeId", true);
+                m_key = localmachineKey.OpenSubKey(sub_key, true);
 
-            m_key.SetValue("Path", path);
+            m_key.SetValue(pole, val);
             m_key.Close();
 
 
@@ -132,13 +135,13 @@ namespace BarCodeID
             OpenFileDialog op_fd = new OpenFileDialog();
             op_fd.Filter = "INI File(*.ini)|*.ini";
             op_fd.Title = "Выбор файла конфигурации справочника";
-            if (CheckRegistryPath())
-                op_fd.FileName = GetRegistryValue();
+            if (CheckRegistryPath("BarCodeID"))
+                op_fd.FileName = GetRegistryValue("BarCodeID","Path");
 
             if (op_fd.ShowDialog() == DialogResult.OK)
             {
                 DbPath = op_fd.FileName;
-                SetRegistryValue(DbPath);
+                SetRegistryValue("BarCodeID","Path",DbPath);
             }
 
 
@@ -149,13 +152,13 @@ namespace BarCodeID
         private void MainForm_Shown(object sender, EventArgs e)
         {
            
-            if (!CheckRegistryPath())
+            if (!CheckRegistryPath("BarCodeID"))
             {
                 path_btn_Click(null, null);
             }
-            if (CheckRegistryPath())
+            if (CheckRegistryPath("BarCodeID"))
             {
-                DbPath = GetRegistryValue();
+                DbPath = GetRegistryValue("BarCodeID", "Path");
                 path_lbl.Text = DbPath;
                 try {
                     DbList = Functions.LoadConfig(DbPath);
@@ -166,8 +169,15 @@ namespace BarCodeID
                     MessageBox.Show("ошибка загрузки справочника");
                 }
             }
-            if (!CheckRegistryPath())
+            if (!CheckRegistryPath("BarCodeID"))
                 this.Close();
+
+            if(CheckRegistryPath("BarCodeID"))
+            {
+                string ip = GetRegistryValue("BarCodeId", "IpDb");
+                if (ip.Length > 0)
+                    ipbd_txb.Text = ip;
+            }
         }
 
         private void UpdateListControl()
@@ -760,6 +770,80 @@ namespace BarCodeID
             qr_result_poluf.Items.Clear();
             qr_add_poluf.Items.Clear();
             print_page_poluf.Invalidate();
+        }
+
+        private void OK_IP_btn_Click(object sender, EventArgs e)
+        {
+
+            SetRegistryValue("BarCodeId", "IpDb", ipbd_txb.Text);
+
+        }
+
+        //запрос к серверу на получение списка номеров
+        private void ask_base_btn_Click(object sender, EventArgs e)
+        {
+            TcpClient tcpClient = new TcpClient(); 
+            NetworkStream stream;
+            num_list_serial_lst.Items.Clear();
+            try {
+                tcpClient = new TcpClient();
+                tcpClient.Connect(ipbd_txb.Text, 9595);
+                Byte[] data = System.Text.Encoding.ASCII.GetBytes("ASK_BASE");
+
+                // Получаем поток для чтения и записи данных.
+                stream = tcpClient.GetStream();
+
+                // Отправляем сообщение нашему серверу. 
+                stream.Write(data, 0, data.Length);
+
+
+                // Получаем ответ от сервера.
+
+                // Буфер для хранения принятого массива bytes.
+                //data = new Byte[strea;
+
+                // Строка для хранения полученных ASCII данных.
+                String responseData = String.Empty;
+
+                // Читаем первый пакет ответа сервера. 
+                // Можно читать всё сообщение.
+                // Для этого надо организовать чтение в цикле как на сервере.
+                Thread.Sleep(1000);
+                while (stream.DataAvailable)
+                {
+                    byte[] bytes_data = new byte[tcpClient.ReceiveBufferSize];
+                    stream.Read(bytes_data, 0, (int)tcpClient.ReceiveBufferSize);
+                    responseData = responseData + System.Text.Encoding.ASCII.GetString(bytes_data);
+                }
+                responseData = responseData.Replace("\0", "");
+
+                string[] str_array = responseData.Split(';');
+                for (int i = 0; i < str_array.Length; i++)
+                {
+                    try
+                    {
+                        num_list_serial_lst.Items.Add(new SerialItem(str_array[i].Split(':')[1], str_array[i].Split(':')[0]));
+                    }
+                    catch { }
+
+                }
+
+                // Закрываем всё.
+                stream.Close();
+                tcpClient.Close();
+            }
+            catch(Exception exx) { MessageBox.Show(exx.Message); }
+            finally
+            {
+                tcpClient.Close();
+               
+             
+            }
+        }
+
+        private void num_list_serial_lst_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DrawQrCode(((SerialItem)num_list_serial_lst.SelectedItem).QR_Data, data_base_serial_page.CreateGraphics(), 70, new Point(260,10));
         }
     }
 }

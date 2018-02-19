@@ -69,6 +69,13 @@
             this.path_btn = new System.Windows.Forms.Button();
             this.path_lbl = new System.Windows.Forms.Label();
             this.timer_scan = new System.Windows.Forms.Timer(this.components);
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.OK_IP_btn = new System.Windows.Forms.Button();
+            this.ipbd_txb = new System.Windows.Forms.TextBox();
+            this.data_base_serial_page = new System.Windows.Forms.TabPage();
+            this.num_list_serial_lst = new System.Windows.Forms.ListBox();
+            this.list_ident_data_bd = new System.Windows.Forms.ListBox();
+            this.ask_base_btn = new System.Windows.Forms.Button();
             this.tab_control.SuspendLayout();
             this.ident_page.SuspendLayout();
             this.print_page_poluf.SuspendLayout();
@@ -80,6 +87,8 @@
             this.database_page.SuspendLayout();
             this.property_page.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.data_base_serial_page.SuspendLayout();
             this.SuspendLayout();
             // 
             // tab_control
@@ -90,6 +99,7 @@
             this.tab_control.Controls.Add(this.ident_page);
             this.tab_control.Controls.Add(this.print_page_poluf);
             this.tab_control.Controls.Add(this.database_page);
+            this.tab_control.Controls.Add(this.data_base_serial_page);
             this.tab_control.Controls.Add(this.property_page);
             this.tab_control.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tab_control.Location = new System.Drawing.Point(0, 0);
@@ -467,6 +477,7 @@
             // 
             // property_page
             // 
+            this.property_page.Controls.Add(this.groupBox2);
             this.property_page.Controls.Add(this.groupBox3);
             this.property_page.Location = new System.Drawing.Point(4, 29);
             this.property_page.Name = "property_page";
@@ -510,6 +521,75 @@
             this.timer_scan.Interval = 1000;
             this.timer_scan.Tick += new System.EventHandler(this.timer_scan_Tick);
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.ipbd_txb);
+            this.groupBox2.Controls.Add(this.OK_IP_btn);
+            this.groupBox2.Location = new System.Drawing.Point(8, 98);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(593, 89);
+            this.groupBox2.TabIndex = 2;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "IP адресс сервера БД";
+            // 
+            // OK_IP_btn
+            // 
+            this.OK_IP_btn.Location = new System.Drawing.Point(228, 32);
+            this.OK_IP_btn.Name = "OK_IP_btn";
+            this.OK_IP_btn.Size = new System.Drawing.Size(112, 30);
+            this.OK_IP_btn.TabIndex = 1;
+            this.OK_IP_btn.Text = "Сохранить";
+            this.OK_IP_btn.UseVisualStyleBackColor = true;
+            this.OK_IP_btn.Click += new System.EventHandler(this.OK_IP_btn_Click);
+            // 
+            // ipbd_txb
+            // 
+            this.ipbd_txb.Location = new System.Drawing.Point(6, 34);
+            this.ipbd_txb.Name = "ipbd_txb";
+            this.ipbd_txb.Size = new System.Drawing.Size(216, 26);
+            this.ipbd_txb.TabIndex = 2;
+            // 
+            // data_base_serial_page
+            // 
+            this.data_base_serial_page.Controls.Add(this.ask_base_btn);
+            this.data_base_serial_page.Controls.Add(this.list_ident_data_bd);
+            this.data_base_serial_page.Controls.Add(this.num_list_serial_lst);
+            this.data_base_serial_page.Location = new System.Drawing.Point(4, 29);
+            this.data_base_serial_page.Name = "data_base_serial_page";
+            this.data_base_serial_page.Size = new System.Drawing.Size(1013, 474);
+            this.data_base_serial_page.TabIndex = 5;
+            this.data_base_serial_page.Text = "База данных";
+            this.data_base_serial_page.UseVisualStyleBackColor = true;
+            // 
+            // num_list_serial_lst
+            // 
+            this.num_list_serial_lst.FormattingEnabled = true;
+            this.num_list_serial_lst.ItemHeight = 20;
+            this.num_list_serial_lst.Location = new System.Drawing.Point(9, 3);
+            this.num_list_serial_lst.Name = "num_list_serial_lst";
+            this.num_list_serial_lst.Size = new System.Drawing.Size(229, 424);
+            this.num_list_serial_lst.TabIndex = 0;
+            this.num_list_serial_lst.SelectedIndexChanged += new System.EventHandler(this.num_list_serial_lst_SelectedIndexChanged);
+            // 
+            // list_ident_data_bd
+            // 
+            this.list_ident_data_bd.FormattingEnabled = true;
+            this.list_ident_data_bd.ItemHeight = 20;
+            this.list_ident_data_bd.Location = new System.Drawing.Point(465, 0);
+            this.list_ident_data_bd.Name = "list_ident_data_bd";
+            this.list_ident_data_bd.Size = new System.Drawing.Size(539, 444);
+            this.list_ident_data_bd.TabIndex = 1;
+            // 
+            // ask_base_btn
+            // 
+            this.ask_base_btn.Location = new System.Drawing.Point(9, 433);
+            this.ask_base_btn.Name = "ask_base_btn";
+            this.ask_base_btn.Size = new System.Drawing.Size(136, 33);
+            this.ask_base_btn.TabIndex = 2;
+            this.ask_base_btn.Text = "Обновить базу";
+            this.ask_base_btn.UseVisualStyleBackColor = true;
+            this.ask_base_btn.Click += new System.EventHandler(this.ask_base_btn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -534,6 +614,9 @@
             this.property_page.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.data_base_serial_page.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -579,6 +662,13 @@
         private System.Windows.Forms.Timer timer_scan;
         private System.Windows.Forms.Button clear_lists_btn;
         private System.Windows.Forms.ComboBox change_interval_cmb;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox ipbd_txb;
+        private System.Windows.Forms.Button OK_IP_btn;
+        private System.Windows.Forms.TabPage data_base_serial_page;
+        private System.Windows.Forms.Button ask_base_btn;
+        private System.Windows.Forms.ListBox list_ident_data_bd;
+        private System.Windows.Forms.ListBox num_list_serial_lst;
     }
 }
 
