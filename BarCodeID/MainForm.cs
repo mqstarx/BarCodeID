@@ -62,9 +62,13 @@ namespace BarCodeID
             {
 
                 // string str = m_key.GetValue("Path").ToString();
-                string str = m_key.GetValue(pole).ToString();
-                m_key.Close();
-                return str;
+                try
+                {
+                    string str = m_key.GetValue(pole).ToString();
+                    m_key.Close();
+                    return str;
+                }
+                catch{ return ""; }
             }
         }
         private void SetRegistryValue(string sub_key, string pole,string val)
