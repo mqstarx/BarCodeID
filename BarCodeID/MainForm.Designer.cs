@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tab_control = new System.Windows.Forms.TabControl();
             this.ident_page = new System.Windows.Forms.TabPage();
             this.list_ident_data = new System.Windows.Forms.ListBox();
@@ -44,8 +45,6 @@
             this.qr_add_poluf = new System.Windows.Forms.ListBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.del_btn_menu = new System.Windows.Forms.ToolStripMenuItem();
-            this.label4 = new System.Windows.Forms.Label();
-            this.sn_param_poluf = new System.Windows.Forms.ComboBox();
             this.qr_result_poluf = new System.Windows.Forms.ListBox();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.del_item_qr_result = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,18 +63,22 @@
             this.id_data = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.data_len_column = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.data_descr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.data_base_serial_page = new System.Windows.Forms.TabPage();
+            this.ask_base_btn = new System.Windows.Forms.Button();
+            this.list_ident_data_bd = new System.Windows.Forms.ListBox();
+            this.num_list_serial_lst = new System.Windows.Forms.ListBox();
             this.property_page = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ipbd_txb = new System.Windows.Forms.TextBox();
+            this.OK_IP_btn = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.path_btn = new System.Windows.Forms.Button();
             this.path_lbl = new System.Windows.Forms.Label();
             this.timer_scan = new System.Windows.Forms.Timer(this.components);
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.OK_IP_btn = new System.Windows.Forms.Button();
-            this.ipbd_txb = new System.Windows.Forms.TextBox();
-            this.data_base_serial_page = new System.Windows.Forms.TabPage();
-            this.num_list_serial_lst = new System.Windows.Forms.ListBox();
-            this.list_ident_data_bd = new System.Windows.Forms.ListBox();
-            this.ask_base_btn = new System.Windows.Forms.Button();
+            this.сброситьВыделениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.help_tab = new System.Windows.Forms.TabPage();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.clear_base_btn = new System.Windows.Forms.Button();
             this.tab_control.SuspendLayout();
             this.ident_page.SuspendLayout();
             this.print_page_poluf.SuspendLayout();
@@ -85,10 +88,11 @@
             this.contextMenuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sn_array_count)).BeginInit();
             this.database_page.SuspendLayout();
-            this.property_page.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.data_base_serial_page.SuspendLayout();
+            this.property_page.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.help_tab.SuspendLayout();
             this.SuspendLayout();
             // 
             // tab_control
@@ -101,6 +105,7 @@
             this.tab_control.Controls.Add(this.database_page);
             this.tab_control.Controls.Add(this.data_base_serial_page);
             this.tab_control.Controls.Add(this.property_page);
+            this.tab_control.Controls.Add(this.help_tab);
             this.tab_control.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tab_control.Location = new System.Drawing.Point(0, 0);
             this.tab_control.Name = "tab_control";
@@ -153,8 +158,6 @@
             this.groupBox1.Controls.Add(this.add_qr_btn);
             this.groupBox1.Controls.Add(this.qr_size_poluf);
             this.groupBox1.Controls.Add(this.qr_add_poluf);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.sn_param_poluf);
             this.groupBox1.Controls.Add(this.qr_result_poluf);
             this.groupBox1.Controls.Add(this.value_poluf_cmb);
             this.groupBox1.Controls.Add(this.label2);
@@ -226,11 +229,12 @@
             // 
             // add_qr_btn
             // 
-            this.add_qr_btn.Location = new System.Drawing.Point(359, 97);
+            this.add_qr_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.add_qr_btn.Location = new System.Drawing.Point(335, 97);
             this.add_qr_btn.Name = "add_qr_btn";
-            this.add_qr_btn.Size = new System.Drawing.Size(38, 30);
+            this.add_qr_btn.Size = new System.Drawing.Size(62, 30);
             this.add_qr_btn.TabIndex = 21;
-            this.add_qr_btn.Text = "+";
+            this.add_qr_btn.Text = "доб/изм";
             this.add_qr_btn.UseVisualStyleBackColor = true;
             this.add_qr_btn.Click += new System.EventHandler(this.add_qr_btn_Click);
             // 
@@ -283,24 +287,6 @@
             this.del_btn_menu.Text = "Удалить";
             this.del_btn_menu.Click += new System.EventHandler(this.del_btn_menu_Click);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(22, 363);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(228, 20);
-            this.label4.TabIndex = 19;
-            this.label4.Text = "Параметр серийного номера";
-            // 
-            // sn_param_poluf
-            // 
-            this.sn_param_poluf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.sn_param_poluf.FormattingEnabled = true;
-            this.sn_param_poluf.Location = new System.Drawing.Point(18, 386);
-            this.sn_param_poluf.Name = "sn_param_poluf";
-            this.sn_param_poluf.Size = new System.Drawing.Size(236, 28);
-            this.sn_param_poluf.TabIndex = 18;
-            // 
             // qr_result_poluf
             // 
             this.qr_result_poluf.ContextMenuStrip = this.contextMenuStrip2;
@@ -314,14 +300,15 @@
             // contextMenuStrip2
             // 
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.del_item_qr_result});
+            this.del_item_qr_result,
+            this.сброситьВыделениеToolStripMenuItem});
             this.contextMenuStrip2.Name = "contextMenuStrip1";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(119, 26);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(191, 48);
             // 
             // del_item_qr_result
             // 
             this.del_item_qr_result.Name = "del_item_qr_result";
-            this.del_item_qr_result.Size = new System.Drawing.Size(118, 22);
+            this.del_item_qr_result.Size = new System.Drawing.Size(190, 22);
             this.del_item_qr_result.Text = "Удалить";
             this.del_item_qr_result.Click += new System.EventHandler(this.del_item_qr_result_Click);
             // 
@@ -475,6 +462,48 @@
             this.data_descr.Text = "Назначение(описание)";
             this.data_descr.Width = 134;
             // 
+            // data_base_serial_page
+            // 
+            this.data_base_serial_page.Controls.Add(this.clear_base_btn);
+            this.data_base_serial_page.Controls.Add(this.ask_base_btn);
+            this.data_base_serial_page.Controls.Add(this.list_ident_data_bd);
+            this.data_base_serial_page.Controls.Add(this.num_list_serial_lst);
+            this.data_base_serial_page.Location = new System.Drawing.Point(4, 29);
+            this.data_base_serial_page.Name = "data_base_serial_page";
+            this.data_base_serial_page.Size = new System.Drawing.Size(1013, 474);
+            this.data_base_serial_page.TabIndex = 5;
+            this.data_base_serial_page.Text = "База данных";
+            this.data_base_serial_page.UseVisualStyleBackColor = true;
+            // 
+            // ask_base_btn
+            // 
+            this.ask_base_btn.Location = new System.Drawing.Point(9, 433);
+            this.ask_base_btn.Name = "ask_base_btn";
+            this.ask_base_btn.Size = new System.Drawing.Size(136, 33);
+            this.ask_base_btn.TabIndex = 2;
+            this.ask_base_btn.Text = "Обновить базу";
+            this.ask_base_btn.UseVisualStyleBackColor = true;
+            this.ask_base_btn.Click += new System.EventHandler(this.ask_base_btn_Click);
+            // 
+            // list_ident_data_bd
+            // 
+            this.list_ident_data_bd.FormattingEnabled = true;
+            this.list_ident_data_bd.ItemHeight = 20;
+            this.list_ident_data_bd.Location = new System.Drawing.Point(465, 0);
+            this.list_ident_data_bd.Name = "list_ident_data_bd";
+            this.list_ident_data_bd.Size = new System.Drawing.Size(539, 444);
+            this.list_ident_data_bd.TabIndex = 1;
+            // 
+            // num_list_serial_lst
+            // 
+            this.num_list_serial_lst.FormattingEnabled = true;
+            this.num_list_serial_lst.ItemHeight = 20;
+            this.num_list_serial_lst.Location = new System.Drawing.Point(9, 3);
+            this.num_list_serial_lst.Name = "num_list_serial_lst";
+            this.num_list_serial_lst.Size = new System.Drawing.Size(229, 424);
+            this.num_list_serial_lst.TabIndex = 0;
+            this.num_list_serial_lst.SelectedIndexChanged += new System.EventHandler(this.num_list_serial_lst_SelectedIndexChanged);
+            // 
             // property_page
             // 
             this.property_page.Controls.Add(this.groupBox2);
@@ -485,6 +514,34 @@
             this.property_page.TabIndex = 4;
             this.property_page.Text = "Настройки";
             this.property_page.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.ipbd_txb);
+            this.groupBox2.Controls.Add(this.OK_IP_btn);
+            this.groupBox2.Location = new System.Drawing.Point(8, 98);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(593, 89);
+            this.groupBox2.TabIndex = 2;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "IP адресс сервера БД";
+            // 
+            // ipbd_txb
+            // 
+            this.ipbd_txb.Location = new System.Drawing.Point(6, 34);
+            this.ipbd_txb.Name = "ipbd_txb";
+            this.ipbd_txb.Size = new System.Drawing.Size(216, 26);
+            this.ipbd_txb.TabIndex = 2;
+            // 
+            // OK_IP_btn
+            // 
+            this.OK_IP_btn.Location = new System.Drawing.Point(228, 32);
+            this.OK_IP_btn.Name = "OK_IP_btn";
+            this.OK_IP_btn.Size = new System.Drawing.Size(112, 30);
+            this.OK_IP_btn.TabIndex = 1;
+            this.OK_IP_btn.Text = "Сохранить";
+            this.OK_IP_btn.UseVisualStyleBackColor = true;
+            this.OK_IP_btn.Click += new System.EventHandler(this.OK_IP_btn_Click);
             // 
             // groupBox3
             // 
@@ -521,74 +578,41 @@
             this.timer_scan.Interval = 1000;
             this.timer_scan.Tick += new System.EventHandler(this.timer_scan_Tick);
             // 
-            // groupBox2
+            // сброситьВыделениеToolStripMenuItem
             // 
-            this.groupBox2.Controls.Add(this.ipbd_txb);
-            this.groupBox2.Controls.Add(this.OK_IP_btn);
-            this.groupBox2.Location = new System.Drawing.Point(8, 98);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(593, 89);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "IP адресс сервера БД";
+            this.сброситьВыделениеToolStripMenuItem.Name = "сброситьВыделениеToolStripMenuItem";
+            this.сброситьВыделениеToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.сброситьВыделениеToolStripMenuItem.Text = "Сбросить выделение";
+            this.сброситьВыделениеToolStripMenuItem.Click += new System.EventHandler(this.сброситьВыделениеToolStripMenuItem_Click);
             // 
-            // OK_IP_btn
+            // help_tab
             // 
-            this.OK_IP_btn.Location = new System.Drawing.Point(228, 32);
-            this.OK_IP_btn.Name = "OK_IP_btn";
-            this.OK_IP_btn.Size = new System.Drawing.Size(112, 30);
-            this.OK_IP_btn.TabIndex = 1;
-            this.OK_IP_btn.Text = "Сохранить";
-            this.OK_IP_btn.UseVisualStyleBackColor = true;
-            this.OK_IP_btn.Click += new System.EventHandler(this.OK_IP_btn_Click);
+            this.help_tab.Controls.Add(this.richTextBox1);
+            this.help_tab.Location = new System.Drawing.Point(4, 29);
+            this.help_tab.Name = "help_tab";
+            this.help_tab.Size = new System.Drawing.Size(1013, 474);
+            this.help_tab.TabIndex = 6;
+            this.help_tab.Text = "Справка";
+            this.help_tab.UseVisualStyleBackColor = true;
             // 
-            // ipbd_txb
+            // richTextBox1
             // 
-            this.ipbd_txb.Location = new System.Drawing.Point(6, 34);
-            this.ipbd_txb.Name = "ipbd_txb";
-            this.ipbd_txb.Size = new System.Drawing.Size(216, 26);
-            this.ipbd_txb.TabIndex = 2;
+            this.richTextBox1.Location = new System.Drawing.Point(8, 3);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
+            this.richTextBox1.Size = new System.Drawing.Size(996, 463);
+            this.richTextBox1.TabIndex = 0;
+            this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
             // 
-            // data_base_serial_page
+            // clear_base_btn
             // 
-            this.data_base_serial_page.Controls.Add(this.ask_base_btn);
-            this.data_base_serial_page.Controls.Add(this.list_ident_data_bd);
-            this.data_base_serial_page.Controls.Add(this.num_list_serial_lst);
-            this.data_base_serial_page.Location = new System.Drawing.Point(4, 29);
-            this.data_base_serial_page.Name = "data_base_serial_page";
-            this.data_base_serial_page.Size = new System.Drawing.Size(1013, 474);
-            this.data_base_serial_page.TabIndex = 5;
-            this.data_base_serial_page.Text = "База данных";
-            this.data_base_serial_page.UseVisualStyleBackColor = true;
-            // 
-            // num_list_serial_lst
-            // 
-            this.num_list_serial_lst.FormattingEnabled = true;
-            this.num_list_serial_lst.ItemHeight = 20;
-            this.num_list_serial_lst.Location = new System.Drawing.Point(9, 3);
-            this.num_list_serial_lst.Name = "num_list_serial_lst";
-            this.num_list_serial_lst.Size = new System.Drawing.Size(229, 424);
-            this.num_list_serial_lst.TabIndex = 0;
-            this.num_list_serial_lst.SelectedIndexChanged += new System.EventHandler(this.num_list_serial_lst_SelectedIndexChanged);
-            // 
-            // list_ident_data_bd
-            // 
-            this.list_ident_data_bd.FormattingEnabled = true;
-            this.list_ident_data_bd.ItemHeight = 20;
-            this.list_ident_data_bd.Location = new System.Drawing.Point(465, 0);
-            this.list_ident_data_bd.Name = "list_ident_data_bd";
-            this.list_ident_data_bd.Size = new System.Drawing.Size(539, 444);
-            this.list_ident_data_bd.TabIndex = 1;
-            // 
-            // ask_base_btn
-            // 
-            this.ask_base_btn.Location = new System.Drawing.Point(9, 433);
-            this.ask_base_btn.Name = "ask_base_btn";
-            this.ask_base_btn.Size = new System.Drawing.Size(136, 33);
-            this.ask_base_btn.TabIndex = 2;
-            this.ask_base_btn.Text = "Обновить базу";
-            this.ask_base_btn.UseVisualStyleBackColor = true;
-            this.ask_base_btn.Click += new System.EventHandler(this.ask_base_btn_Click);
+            this.clear_base_btn.Location = new System.Drawing.Point(275, 427);
+            this.clear_base_btn.Name = "clear_base_btn";
+            this.clear_base_btn.Size = new System.Drawing.Size(139, 39);
+            this.clear_base_btn.TabIndex = 3;
+            this.clear_base_btn.Text = "Очистить базу";
+            this.clear_base_btn.UseVisualStyleBackColor = true;
+            this.clear_base_btn.Click += new System.EventHandler(this.clear_base_btn_Click);
             // 
             // MainForm
             // 
@@ -611,12 +635,13 @@
             this.contextMenuStrip2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.sn_array_count)).EndInit();
             this.database_page.ResumeLayout(false);
+            this.data_base_serial_page.ResumeLayout(false);
             this.property_page.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.data_base_serial_page.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.help_tab.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -649,8 +674,6 @@
         private System.Windows.Forms.ComboBox param_poluf_cmb;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown qr_size_poluf;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox sn_param_poluf;
         private System.Windows.Forms.ListBox qr_add_poluf;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem del_btn_menu;
@@ -669,6 +692,10 @@
         private System.Windows.Forms.Button ask_base_btn;
         private System.Windows.Forms.ListBox list_ident_data_bd;
         private System.Windows.Forms.ListBox num_list_serial_lst;
+        private System.Windows.Forms.ToolStripMenuItem сброситьВыделениеToolStripMenuItem;
+        private System.Windows.Forms.TabPage help_tab;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Button clear_base_btn;
     }
 }
 

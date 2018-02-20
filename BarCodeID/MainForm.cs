@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -201,8 +202,8 @@ namespace BarCodeID
             {
                 param_poluf_cmb.Items.Add(DbList[i]);
 
-                if(DbList[i].KeyValue.Count==0)
-                    sn_param_poluf.Items.Add(DbList[i]);
+               // if(DbList[i].KeyValue.Count==0)
+                 //   sn_param_poluf.Items.Add(DbList[i]);
             }
         }
 
@@ -518,6 +519,7 @@ namespace BarCodeID
             for (int j = 0; j < sn_array_count.Value; j++)
             {
                 string packet_data = "";
+                string sn_str = "";
                 for (int i = 0; i < qr_result_poluf.Items.Count; i++)
                 {
 
@@ -528,11 +530,11 @@ namespace BarCodeID
                         packet_data += ((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).TypeId + ((KeyValuePair<string, string>)((ListObject)qr_result_poluf.Items[i]).Object1).Key;
                     else
                     {
-                        if (((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).TypeId == ((PacketDataType)sn_param_poluf.SelectedItem).TypeId)
+                        if (((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).TypeId =="N")
                         {
                             int sn_current = int.Parse(((ListObject)qr_result_poluf.Items[i]).Text1);
 
-                            string sn_str = (sn_current + j).ToString();// ((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).DataLen).ToString();
+                            sn_str = (sn_current + j).ToString();// ((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).DataLen).ToString();
                             if (sn_str.Length > ((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).DataLen)
                                 sn_str = sn_str.Substring(1);
                             while (sn_str.Length< ((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).DataLen)
@@ -550,7 +552,7 @@ namespace BarCodeID
 
 
                 }
-                resarray[j] = "FFX" + packet_data.Length.ToString("000")+packet_data + "FXX";
+                resarray[j] = "FFX" + packet_data.Length.ToString("000")+packet_data + "FXX;"+sn_str;
             }
 
             return resarray;
@@ -588,6 +590,19 @@ namespace BarCodeID
             
             if (add_sn_chk.Checked)
             {
+                bool is_serial_exist = false;
+                string sn = "";
+                for (int i = 0; i < qr_result_poluf.Items.Count; i++)
+                {
+                    if (((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).TypeId == "N")
+                    {
+                        is_serial_exist = true;
+                        sn = ((ListObject)qr_result_poluf.Items[i]).Text1;
+                        break;
+                    }
+                }
+                if (!is_serial_exist)
+                    return;
                 PrintDocument printDocument = new PrintDocument();
                 PrintPreviewDialog prd = new PrintPreviewDialog();
                 printDocument.DefaultPageSettings.PaperSize = new PaperSize("Other", (int)qr_size_poluf.Value, (int)qr_size_poluf.Value);
@@ -595,15 +610,36 @@ namespace BarCodeID
                 printDocument.PrintPage += PrintDocument_PrintPageArray;
                
                 arr_print  = GenerateQrPacketArray();
-                cur_page_packet_counter = 0;
-               
-                prd.ShowDialog();
-                /* for(int i=0;i<arr.Length;i++)
-                 {
-                     cur_page_packet = arr[i];
-                     printDocument.Print();
 
-                 }*/
+                if (MessageBox.Show("Добавить номера в базу данных?", "Запись в базу данных", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    //string[] sn_array = new string[arr_print.Length];
+                    string request = "ADD_SERIAL_ARRAY:";
+                    for (int i = 0; i < arr_print.Length; i++)
+                    {
+                        request += arr_print[i].Split(';')[1] + ":" + arr_print[i].Split(';')[0] + ";";
+                    }
+                    string answ = TcpReq(request);
+                    if (answ == "ADD_NUMS_OK")
+                    {
+                        MessageBox.Show("Номера добавлены");
+                    }
+                    else if(answ == "ADD_NUMS_FAILURE")
+                    {
+                        MessageBox.Show("Ошибка добавления. Один или несколько номеров существует в базе");
+                        
+                    }
+                    else if(answ == "ERROR_ADD_NUMS")
+                    {
+                        MessageBox.Show("Ошибка добавления");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Сервер не отвечает");
+                    }
+                }
+                cur_page_packet_counter = 0;
+                prd.ShowDialog();
             }
             else
             {
@@ -613,8 +649,47 @@ namespace BarCodeID
                 
                 prd.Document = printDocument;
                 printDocument.PrintPage += PD_PrintPage;
+               
+                    bool is_serial_exist = false;
+                    string sn = "";
+                    for (int i = 0; i < qr_result_poluf.Items.Count; i++)
+                    {
+                        if (((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).TypeId == "N")
+                        {
+                            is_serial_exist = true;
+                            sn = ((ListObject)qr_result_poluf.Items[i]).Text1;
+                            break;
+                        }
+                    }
+                if (is_serial_exist)
+                {
+                    if (MessageBox.Show("Добавить номер в базу данных?", "Запись в базу данных", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                    {
+                        string request = "ADD_SERIAL:" + sn + ";" + GenerateQrPacket();
+                        string answ = TcpReq(request);
+                        if (answ == "ADD_NUM_OK")
+                        {
+                            MessageBox.Show("Номера добавлен");
+                        }
+                        else if (answ == "ADD_NUM_FAILURE")
+                        {
+                            MessageBox.Show("Ошибка добавления.  Номер существует в базе");
+
+                        }
+                        else if (answ == "ERROR_ADD_NUM")
+                        {
+                            MessageBox.Show("Ошибка добавления");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Сервер не отвечает");
+                        }
+
+                    }
+                }
+
+                
                 prd.ShowDialog();
-               /// printDocument.Print();
             }
         }
 
@@ -638,7 +713,7 @@ namespace BarCodeID
 
 
 
-                DrawQrCode(arr_print[cur_page_packet_counter], e.Graphics, (int)qr_size_poluf.Value, new Point(0, 0));
+                DrawQrCode(arr_print[cur_page_packet_counter].Split(';')[0], e.Graphics, (int)qr_size_poluf.Value, new Point(0, 0));
               
                 cur_page_packet_counter++;
 
@@ -655,11 +730,7 @@ namespace BarCodeID
                     MessageBox.Show("Нельзя печатать разные этикетки с одинаковыми комплектующими");
                     add_sn_chk.Checked = false;
                 }
-                if (sn_param_poluf.SelectedItem == null)
-                {
-                    MessageBox.Show("Не выбран параметр серии");
-                    add_sn_chk.Checked = false;
-                }
+           
             }
         }
 
@@ -701,7 +772,10 @@ namespace BarCodeID
                     return;
                 }
                 lwi.Text1 = value_poluf_cmb.Text;
-                qr_result_poluf.Items.Add(lwi);
+                if (qr_result_poluf.SelectedItem != null)
+                    qr_result_poluf.Items[qr_result_poluf.SelectedIndex] = lwi;
+                else
+                    qr_result_poluf.Items.Add(lwi);
 
 
 
@@ -712,14 +786,14 @@ namespace BarCodeID
 
         private void incr_sn_btn_Click(object sender, EventArgs e)
         {
-            if(sn_param_poluf.SelectedIndex==-1)
+            /*if(sn_param_poluf.SelectedIndex==-1)
             {
                 MessageBox.Show("Не выбран параметр серии");
                 return;
-            }
+            }*/
             for (int i = 0; i < qr_result_poluf.Items.Count; i++)
             {
-                if (((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).TypeId == ((PacketDataType)sn_param_poluf.SelectedItem).TypeId)
+                if (((PacketDataType)((ListObject)qr_result_poluf.Items[i]).Object).TypeId =="N")
                 {
                     int sn = int.Parse(((ListObject)qr_result_poluf.Items[i]).Text1);
                     string sn_str = (sn + 1).ToString();
@@ -783,16 +857,16 @@ namespace BarCodeID
 
         }
 
-        //запрос к серверу на получение списка номеров
-        private void ask_base_btn_Click(object sender, EventArgs e)
+        public string TcpReq(string send)
         {
-            TcpClient tcpClient = new TcpClient(); 
+            TcpClient tcpClient = new TcpClient();
             NetworkStream stream;
             num_list_serial_lst.Items.Clear();
-            try {
+            try
+            {
                 tcpClient = new TcpClient();
                 tcpClient.Connect(ipbd_txb.Text, 9595);
-                Byte[] data = System.Text.Encoding.ASCII.GetBytes("ASK_BASE");
+                Byte[] data = System.Text.Encoding.ASCII.GetBytes(send);
 
                 // Получаем поток для чтения и записи данных.
                 stream = tcpClient.GetStream();
@@ -800,54 +874,68 @@ namespace BarCodeID
                 // Отправляем сообщение нашему серверу. 
                 stream.Write(data, 0, data.Length);
 
-
-                // Получаем ответ от сервера.
-
-                // Буфер для хранения принятого массива bytes.
-                //data = new Byte[strea;
-
-                // Строка для хранения полученных ASCII данных.
+               // stream.Flush();
+              
                 String responseData = String.Empty;
-
-                // Читаем первый пакет ответа сервера. 
-                // Можно читать всё сообщение.
-                // Для этого надо организовать чтение в цикле как на сервере.
-                Thread.Sleep(1000);
-                while (stream.DataAvailable)
-                {
-                    byte[] bytes_data = new byte[tcpClient.ReceiveBufferSize];
-                    stream.Read(bytes_data, 0, (int)tcpClient.ReceiveBufferSize);
-                    responseData = responseData + System.Text.Encoding.ASCII.GetString(bytes_data);
-                }
+                byte[] bytes_data = new byte[10000000];
+              //  while (!stream.DataAvailable) { }
+              //  int gi;
+             //   while (stream.Read(bytes_data, 0, bytes_data.Length) != 0)
+              //   {
+                stream.Read(bytes_data, 0, bytes_data.Length);
+                   
+              //  }
+                responseData = System.Text.Encoding.ASCII.GetString(bytes_data);
                 responseData = responseData.Replace("\0", "");
-
-                string[] str_array = responseData.Split(';');
-                for (int i = 0; i < str_array.Length; i++)
-                {
-                    try
-                    {
-                        num_list_serial_lst.Items.Add(new SerialItem(str_array[i].Split(':')[1], str_array[i].Split(':')[0]));
-                    }
-                    catch { }
-
-                }
-
+               
                 // Закрываем всё.
                 stream.Close();
                 tcpClient.Close();
+                return responseData;
             }
-            catch(Exception exx) { MessageBox.Show(exx.Message); }
+            catch (Exception exx) { MessageBox.Show(exx.Message); return ""; }
             finally
             {
                 tcpClient.Close();
-               
-             
+              
+
             }
         }
+        //запрос к серверу на получение списка номеров
+        private void ask_base_btn_Click(object sender, EventArgs e)
+        {
+            
+            string[] str_array = TcpReq("ASK_BASE").Split(';');
+          
+                for (int i = 0; i < str_array.Length; i++)
+                {
+                    try
+                   {
+                            if(str_array[i]!=null && str_array[i].Length>0)
+                                num_list_serial_lst.Items.Add(new SerialItem(str_array[i].Split(':')[1], str_array[i].Split(':')[0]));
+                    }
+                    catch(Exception ee) { MessageBox.Show(ee.Message); }
+
+               }
+
+                // Закрываем всё.
+               
+        }
+      
 
         private void num_list_serial_lst_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DrawQrCode(((SerialItem)num_list_serial_lst.SelectedItem).QR_Data, data_base_serial_page.CreateGraphics(), 70, new Point(260,10));
+            DrawQrCode(((SerialItem)num_list_serial_lst.SelectedItem).QR_Data, data_base_serial_page.CreateGraphics(), 100, new Point(260,10));
+        }
+
+        private void сброситьВыделениеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            qr_result_poluf.SelectedIndex = -1;
+        }
+
+        private void clear_base_btn_Click(object sender, EventArgs e)
+        {
+            TcpReq("CLEAR_BASE");
         }
     }
 }

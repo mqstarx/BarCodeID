@@ -123,6 +123,20 @@
   <metadata name="contextMenuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>172, 17</value>
   </metadata>
+  <data name="richTextBox1.Text" xml:space="preserve">
+    <value>1. Заполнение справочника для идентификации данных
+Секция [main] - здесь указываются основные типы данных информации
+Например datatypes=T;Z;N
+ 2. Описание типов
+[T]
+name=Тип изделия  // наименование в справочнике
+len=1 // кол-во знаков
+array=0:Комплектация;1:Сборочный узел;2:Готовое изделие // для выбора из списка
+В случае отсутствия необходимости в выборе из списка данный параметр можно не указывать
+
+Примечание:
+тип данных  N - используется для привязки к базе данных серийных номеров </value>
+  </data>
   <metadata name="timer_scan.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>327, 17</value>
   </metadata>
